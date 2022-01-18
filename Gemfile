@@ -19,6 +19,14 @@ gem 'puma', '~> 5.0'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
+gem 'sidekiq', '~> 6.0'
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-rails_csrf_protection' # for OmniAuth2
+gem 'lograge'
+gem 'lograge-sql'
+# gem "logstash-event"
+gem 'logstash-logger'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 

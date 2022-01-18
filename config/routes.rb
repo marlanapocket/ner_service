@@ -1,3 +1,10 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+    devise_for :users, controllers: {
+      omniauth_callbacks: 'omniauth_callbacks'
+    }
+    post '/users/auth/developer/callback', to: 'sessions#create'
+    resources :ner_models, only: :index
+    post '/train', to: 'ner_models#train'
+    post '/recognize', to: 'ner_models#recognize'
+    get '/status/:task_id', to: 'ner_models#status'
 end

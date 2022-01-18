@@ -1,0 +1,2 @@
+class NerModel < ApplicationRecord
+end

@@ -20,21 +20,27 @@ require "rails/test_unit/railtie"
 Bundler.require(*Rails.groups)
 
 module NerService
-  class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+    class Application < Rails::Application
+        # Initialize configuration defaults for originally generated Rails version.
+        config.load_defaults 6.1
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+        # Configuration for the application, engines, and railties goes here.
+        #
+        # These settings can be overridden in specific environments using the files
+        # in config/environments, which are processed later.
+        #
+        # config.time_zone = "Central Time (US & Canada)"
+        # config.eager_load_paths << Rails.root.join("extras")
 
-    # Only loads a smaller set of middleware suitable for API only apps.
-    # Middleware like session, flash, cookies can be added back manually.
-    # Skip views, helpers and assets when generating a new resource.
-    config.api_only = true
-  end
+        # Only loads a smaller set of middleware suitable for API only apps.
+        # Middleware like session, flash, cookies can be added back manually.
+        # Skip views, helpers and assets when generating a new resource.
+        config.api_only = true
+        config.active_job.queue_adapter = :sidekiq
+
+        # OmniAuth integration in Rails API
+        config.session_store :cookie_store, key: "_NER_SERVICE_session_#{Rails.env}"
+        config.middleware.use ActionDispatch::Cookies # Required for all session management
+        config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
+    end
 end
