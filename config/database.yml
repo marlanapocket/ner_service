@@ -11,7 +11,7 @@ default: &default
     encoding: utf8
     pool: 5
     user: postgres
-    password: secret
+    password: <%= Rails.application.credentials.dig(:database_password) %>
     timeout: 5000
 
 development:
