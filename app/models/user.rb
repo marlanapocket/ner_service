@@ -1,18 +1,19 @@
 class User < ApplicationRecord
-    # Include default devise modules. Others available are:
-    # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-    devise :database_authenticatable, :registerable,
-           :recoverable, :rememberable, :validatable
-    devise :omniauthable, omniauth_providers: [:developer]
+    include Devise::JWT::RevocationStrategies::Allowlist
 
-    def self.from_omniauth(auth)
-        user = find_or_initialize_by(provider: auth.provider, uid: auth.uid)
-        user.email = auth.info.email
-        user.password = Devise.friendly_token[0, 20]
-        # user.name = auth.info.name # assuming the user model has a name
-        # user.image = auth.info.image # assuming the user model has an image
-        user.save
-        user
+    has_many :ner_models
+    has_many :tasks
+    has_many :allowlisted_jwts
+
+    devise :database_authenticatable,
+           :jwt_authenticatable, jwt_revocation_strategy: self
+
+    def on_jwt_dispatch(token, payload)
+        super
+        AllowlistedJwt.where(user: self)  # Destroys still valid token when a new token is dispatched
+                      .where('exp > ?', DateTime.now)
+                      .where.not(jti: payload["jti"])
+                      .destroy_all
     end
 
 end

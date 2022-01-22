@@ -37,10 +37,7 @@ module NerService
         # Skip views, helpers and assets when generating a new resource.
         config.api_only = true
         config.active_job.queue_adapter = :sidekiq
+        config.active_storage.service = :local
 
-        # OmniAuth integration in Rails API
-        config.session_store :cookie_store, key: "_NER_SERVICE_session_#{Rails.env}"
-        config.middleware.use ActionDispatch::Cookies # Required for all session management
-        config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
     end
 end
