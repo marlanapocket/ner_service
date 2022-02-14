@@ -7,12 +7,12 @@ class NerModelsController < ApplicationController
     end
 
     def models
-        models = NerModel.where(public: true)#.or(NerModel.where(user: current_user))
+        models = NerModel.where(public: true).or(NerModel.where(user: current_user))
         render json: models, status: :ok
     end
 
     def tasks
-        tasks = Task.all  # Task.where(user: current_user)
+        tasks = Task.where(transkribus_user_id: params[:transkribus_user_id])
         render json: tasks.map{|t| {id: t.id, status: t.status, parameters: t.parameters} }, status: :ok
     end
 
@@ -26,7 +26,6 @@ class NerModelsController < ApplicationController
         end
     end
 
-    # curl -F 'files[]=@/home/axel/Images/photo_axel.jpg' -F 'files[]=@/home/axel/Images/poe.png' -F 'model_title=model1' -F 'model_description=this is a great AI model !' -F 'model_language=fr' http://localhost:3000/train
     def train
         task = Task.new
         task.status = "Created"
@@ -45,7 +44,17 @@ class NerModelsController < ApplicationController
     end
 
     def recognize
-        task_id = RecognizeWorker.perform_async
-        render json: { message: 'The recognition process has started.', taskId: task_id }, status: :ok
+        task = Task.new
+        task.status = "Created"
+        task.user = current_user
+        task.transkribus_user_id = params[:transkribus_user_id]
+        task.parameters = {
+          type: "recognition",
+          pages_urls: params[:files_urls],
+          model_id: params[:model_id]
+        }
+        task.save
+        RecognizeWorker.perform_async task.id
+        render json: { message: 'The recognition process has started.', taskId: task.id }, status: :ok
     end
 end

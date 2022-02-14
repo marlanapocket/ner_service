@@ -33,13 +33,15 @@ class TrainWorker
                 FileUtils.copy file.path, "#{working_dir}/training_data"
             end
         end
-        sleep 10
+
         # ...Execute system script to train model
+        sleep 10
 
         # Attach model data to ner_model
         task.status = "Saving model"
         task.save
         # ner_model.model.attach(io: File.open(""), filename: "model.bin")
+        # ner_model.path = ""
         # ner_model.save
 
 

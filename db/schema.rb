@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2022_01_22_104255) do
   create_table "ner_models", force: :cascade do |t|
     t.boolean "public"
     t.string "title"
+    t.string "path"
     t.text "description"
     t.string "language"
     t.string "transkribus_user_id"
