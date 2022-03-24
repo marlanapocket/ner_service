@@ -33,7 +33,7 @@ Redis is used by the Sidekiq gem to keep track of background jobs. You can use d
 docker run --name ner_service_redis -p 127.0.0.1:6379:6379 -d redis
 ```
 To actually start the Sidekiq process, enter `bundle exec sidekiq` in a new terminal.
-To start the web server, use `rails server`
+To start the web server, use `rails server` in a new terminal.
 
 ## Usage
 ### Login
